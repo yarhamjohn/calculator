@@ -6,7 +6,7 @@
     <h3>@currentInput()</h3>
     @foreach (var digit in @digits)
             {
-               <button @onclick="@(() => addToInput(@digit))">@digit</button>
+               <button id=@digit @onclick="@(() => addToInput(@digit))">@digit</button>
             }
 </div>
 <p>@getResult()</p>
