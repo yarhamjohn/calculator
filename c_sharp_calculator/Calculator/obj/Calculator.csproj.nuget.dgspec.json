@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\repos\\calculator\\c_sharp_calculator\\Calculator\\Calculator.csproj": {}
+    "C:\\repos\\calculator\\c_sharp_calculator\\Calculator\\Calculator.csproj": {}
   },
   "projects": {
-    "c:\\repos\\calculator\\c_sharp_calculator\\Calculator\\Calculator.csproj": {
+    "C:\\repos\\calculator\\c_sharp_calculator\\Calculator\\Calculator.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\repos\\calculator\\c_sharp_calculator\\Calculator\\Calculator.csproj",
+        "projectUniqueName": "C:\\repos\\calculator\\c_sharp_calculator\\Calculator\\Calculator.csproj",
         "projectName": "Calculator",
-        "projectPath": "c:\\repos\\calculator\\c_sharp_calculator\\Calculator\\Calculator.csproj",
+        "projectPath": "C:\\repos\\calculator\\c_sharp_calculator\\Calculator\\Calculator.csproj",
         "packagesPath": "C:\\Users\\John.Yarham\\.nuget\\packages\\",
-        "outputPath": "c:\\repos\\calculator\\c_sharp_calculator\\Calculator\\obj\\",
+        "outputPath": "C:\\repos\\calculator\\c_sharp_calculator\\Calculator\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\",

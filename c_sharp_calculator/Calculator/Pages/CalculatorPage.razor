@@ -1,0 +1,40 @@
+@page "/calculator"
+
+<h1>Calculator</h1>
+
+<div>
+    <h3>@currentInput()</h3>
+    @foreach (var digit in @digits)
+            {
+               <button @onclick="@(() => addToInput(@digit))">@digit</button>
+            }
+</div>
+<p>@getResult()</p>
+
+@code {
+    List<int> digits = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
+
+    List<string> inputs = new List<string>();
+
+    void addToInput(int digit)
+    {
+        inputs.Add(digit.ToString());
+    }
+
+    string currentInput()
+    {
+        return string.Join("", inputs);
+    }
+
+    decimal getResult()
+    {
+        var calculation = currentInput();
+        if (calculation.Count() == 0)
+        {
+            return 0;
+        }
+
+        return Convert.ToDecimal(currentInput());
+    }
+
+}

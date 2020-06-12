@@ -58,6 +58,55 @@
       },
       {
         "Kind": "Components.Component",
+        "Name": "Calculator.Pages.CalculatorPage",
+        "AssemblyName": "Calculator",
+        "Documentation": null,
+        "TagOutputHint": null,
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "CalculatorPage",
+            "ParentTag": null,
+            "TagStructure": 0,
+            "Attributes": [],
+            "Diagnostics": []
+          }
+        ],
+        "BoundAttributes": [],
+        "AllowedChildTags": [],
+        "Diagnostics": [],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "Calculator.Pages.CalculatorPage"
+        }
+      },
+      {
+        "Kind": "Components.Component",
+        "Name": "Calculator.Pages.CalculatorPage",
+        "AssemblyName": "Calculator",
+        "Documentation": null,
+        "TagOutputHint": null,
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "Calculator.Pages.CalculatorPage",
+            "ParentTag": null,
+            "TagStructure": 0,
+            "Attributes": [],
+            "Diagnostics": []
+          }
+        ],
+        "BoundAttributes": [],
+        "AllowedChildTags": [],
+        "Diagnostics": [],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "Calculator.Pages.CalculatorPage",
+          "Components.NameMatch": "Components.FullyQualifiedNameMatch"
+        }
+      },
+      {
+        "Kind": "Components.Component",
         "Name": "Calculator.Pages.Counter",
         "AssemblyName": "Calculator",
         "Documentation": null,
@@ -10440,6 +10489,11 @@
     {
       "FilePath": "c:\\repos\\calculator\\c_sharp_calculator\\Calculator\\Pages\\FetchData.razor",
       "TargetPath": "Pages\\FetchData.razor",
+      "FileKind": "component"
+    },
+    {
+      "FilePath": "c:\\repos\\calculator\\c_sharp_calculator\\Calculator\\Pages\\CalculatorPage.razor",
+      "TargetPath": "Pages\\CalculatorPage.razor",
       "FileKind": "component"
     },
     {
