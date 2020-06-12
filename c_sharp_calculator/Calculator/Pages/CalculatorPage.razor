@@ -12,11 +12,19 @@
 </div>
 <div class="button-container">
     @foreach (var row in @buttons) {
-        <div class="button-container-row">
+        @if (row.Count() == 1) {
+        <div class="button-container-row-single">
             @foreach (var button in row) {
-                <button id=@button.DisplayText class="digit-button" @onclick="@(() => @calculation.AddToCalculation(@button))">@button.DisplayText</button>
+                <button id=@button.DisplayText class="digit-button" @onclick="@(() => @calculation.UpdateCalculation(@button))">@button.DisplayText</button>
             }
         </div>
+        } else {
+        <div class="button-container-row">
+            @foreach (var button in row) {
+                <button id=@button.DisplayText class="digit-button" @onclick="@(() => @calculation.UpdateCalculation(@button))">@button.DisplayText</button>
+            }
+        </div>
+        }
     }
 </div>
 
@@ -26,10 +34,11 @@
 @code {
     List<List<Button>> buttons = new List<List<Button>>()
     {
-    new List<Button>() { new Button("7"), new Button("8"), new Button("9") },
-    new List<Button>() { new Button("4"), new Button("5"), new Button("6") },
-    new List<Button>() { new Button("1"), new Button("2"), new Button("3") },
-    new List<Button>() { new Button("+/-"), new Button("0"), new Button(".") }
+    new List<Button>() { new Button("÷")},
+    new List<Button>() { new Button("7"), new Button("8"), new Button("9"), new Button("x") },
+    new List<Button>() { new Button("4"), new Button("5"), new Button("6"), new Button("-") },
+    new List<Button>() { new Button("1"), new Button("2"), new Button("3"), new Button("+") },
+    new List<Button>() { new Button("+/-"), new Button("0"), new Button("."), new Button("=") }
     };
 
     Calculation calculation = new Calculation();
