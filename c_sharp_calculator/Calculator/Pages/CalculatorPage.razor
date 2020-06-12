@@ -1,40 +1,36 @@
 @page "/calculator"
 
-<h1>Calculator</h1>
+<h1 class="mb-5">Calculator</h1>
 
-<div>
-    <h3>@currentInput()</h3>
-    @foreach (var digit in @digits)
-            {
-               <button id=@digit @onclick="@(() => addToInput(@digit))">@digit</button>
-            }
+<div class="card calculation-card">
+    <div class="card-header calculation-card-header">
+        @calculation.GetCalculation()
+    </div>
+    <div class="card-body calculation-card-text">
+        @Calc.Calculate(@calculation)
+    </div>
 </div>
-<p>@getResult()</p>
+<div class="button-container">
+    @foreach (var row in @buttons) {
+        <div class="button-container-row">
+            @foreach (var button in row) {
+                <button id=@button.DisplayText class="digit-button" @onclick="@(() => @calculation.AddToCalculation(@button))">@button.DisplayText</button>
+            }
+        </div>
+    }
+</div>
+
+
+
 
 @code {
-    List<int> digits = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
-
-    List<string> inputs = new List<string>();
-
-    void addToInput(int digit)
+    List<List<Button>> buttons = new List<List<Button>>()
     {
-        inputs.Add(digit.ToString());
-    }
+    new List<Button>() { new Button("7"), new Button("8"), new Button("9") },
+    new List<Button>() { new Button("4"), new Button("5"), new Button("6") },
+    new List<Button>() { new Button("1"), new Button("2"), new Button("3") },
+    new List<Button>() { new Button("+/-"), new Button("0"), new Button(".") }
+    };
 
-    string currentInput()
-    {
-        return string.Join("", inputs);
-    }
-
-    decimal getResult()
-    {
-        var calculation = currentInput();
-        if (calculation.Count() == 0)
-        {
-            return 0;
-        }
-
-        return Convert.ToDecimal(currentInput());
-    }
-
+    Calculation calculation = new Calculation();
 }
