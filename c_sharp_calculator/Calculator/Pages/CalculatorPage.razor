@@ -9,9 +9,17 @@
     private List<string> currentCalculation = new List<string>();
     private List<string> operators = new List<string> { "+", "-", "x", "÷" };
 
-    private void updateCurrentCalculation(Button button) { 
+    private void updateCurrentCalculation(Button button)
+    {
         if (button.DisplayText == "." && currentCalculation.Contains("."))
         {
+            return;
+        }
+
+        if (button.DisplayText == "." && currentCalculation.Count() == 0)
+        {
+            currentCalculation.Add("0");
+            currentCalculation.Add(button.DisplayText);
             return;
         }
 

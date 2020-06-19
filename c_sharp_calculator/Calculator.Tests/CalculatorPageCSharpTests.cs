@@ -89,4 +89,19 @@ namespace Calculator.Tests
             cut.Find("div[id=calculation]").InnerHtml.Equals("");
         }
     }
+
+    public class DecimalButtonClickTests : TestContext
+    {
+        [Fact]
+        public void ClickingDecimalButton_AppendsToResult_IfResultIsZero()
+        {
+            var cut = RenderComponent<CalculatorPage>();
+
+            cut.Find($"button[id='.']").Click();
+
+            cut.Find("div[id=result]").InnerHtml.Equals("0.");
+            cut.Find("div[id=calculation]").InnerHtml.Equals("");
+        }
+
+    }
 }
