@@ -3,13 +3,13 @@
         @if (row.Count() == 1) {
         <div class="button-container-row-single">
             @foreach (var button in row) {
-<button id=@button.getDisplayText() class="digit-button" @onclick="@(() => @Update(@button))">@button.getDisplayText()</button>   
+<button id=@button.DisplayText class="digit-button" @onclick="@(() => @Update(@button))">@button.DisplayText</button>   
             }
         </div>
         } else {
         <div class="button-container-row">
             @foreach (var button in row) {
-<button id=@button.getDisplayText() class="digit-button" @onclick="@(() => @Update(@button))">@button.getDisplayText()</button>   
+<button id=@button.DisplayText class="digit-button" @onclick="@(() => @Update(@button))">@button.DisplayText</button>   
             }
         </div>
         }
@@ -20,17 +20,17 @@
 
 
 @code {
-    List<List<IButton>> buttons = new List<List<IButton>>()
+    List<List<Button>> buttons = new List<List<Button>>()
     {
-    new List<IButton>() { new ActionButton(CalculatorAction.Divide)},
-    new List<IButton>() { new NumberButton(7),new NumberButton(8), new NumberButton(9), new ActionButton(CalculatorAction.Multiply) },
-    new List<IButton>() { new NumberButton(4), new NumberButton(5), new NumberButton(6), new ActionButton(CalculatorAction.Subtract) },
-    new List<IButton>() { new NumberButton(1), new NumberButton(2), new NumberButton(3), new ActionButton(CalculatorAction.Add) },
-    new List<IButton>() { new CharacterButton("+/-"), new NumberButton(0), new CharacterButton("."), new ActionButton(CalculatorAction.Multiply) }
+    new List<Button>() { new Button(CalculatorAction.Divide)},
+    new List<Button>() { new Button(7),new Button(8), new Button(9), new Button(CalculatorAction.Multiply) },
+    new List<Button>() { new Button(4), new Button(5), new Button(6), new Button(CalculatorAction.Subtract) },
+    new List<Button>() { new Button(1), new Button(2), new Button(3), new Button(CalculatorAction.Add) },
+    new List<Button>() { new Button("+/-"), new Button(0), new Button("."), new Button(CalculatorAction.Equals) }
     };
 
         [Parameter]
-    public EventCallback<IButton> updateCurrentCalculation { get; set; }
+    public EventCallback<Button> updateCurrentCalculation { get; set; }
 
-    private async Task Update(IButton button) { await updateCurrentCalculation.InvokeAsync(button);}
+    private async Task Update(Button button) { await updateCurrentCalculation.InvokeAsync(button);}
 }

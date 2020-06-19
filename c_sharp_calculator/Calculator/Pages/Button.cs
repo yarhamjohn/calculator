@@ -4,121 +4,40 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace Calculator.Pages
 {
-    public interface IButton
+    public class Button
     {
-        string getDisplayText();
-        RenderFragment getButton(Action updateCalculation);
-    }
+        public string DisplayText { get; set; }
 
-    public class NumberButton : IButton
-    {
-        private readonly int number;
-        private RenderFragment result;
-
-        public NumberButton(int number)
+        public Button(int digit)
         {
-            this.number = number;
+            DisplayText = digit.ToString();
         }
 
-        public string getDisplayText()
+        public Button(string character)
         {
-            return number.ToString();
+            DisplayText = character;
         }
-
-        private string test() { Console.WriteLine("test click"); return ""; }
-
-        public RenderFragment getButton(Action updateCalculation)
+        public Button(CalculatorAction calculatorAction)
         {
-            result = b =>
-            {
-                b.OpenElement(1, "button");
-
-                b.AddAttribute(1, "id", getDisplayText());
-                b.AddAttribute(1, "class", "digit-button");
-                b.AddAttribute(1, "onClick", EventCallback.Factory.Create<MouseEventArgs>(this, s => { System.Console.WriteLine(s.ToString()); }));
-
-                b.AddContent(1, getDisplayText());
-
-                b.CloseElement();
-            };
-            return result;
-        }
-    }
-
-    public class CharacterButton : IButton
-    {
-        private readonly string character;
-        private RenderFragment result;
-
-        public CharacterButton(string character)
-        {
-            this.character = character;
-        }
-        public RenderFragment getButton(Action updateCalculation)
-        {
-            result = b =>
-            {
-                b.OpenElement(1, "button");
-
-                b.AddAttribute(1, "id", getDisplayText());
-                b.AddAttribute(1, "class", "digit-button");
-                b.AddAttribute(1, "onClick", updateCalculation);
-
-                b.AddContent(1, getDisplayText());
-
-                b.CloseElement();
-            };
-            return result;
-        }
-
-        public string getDisplayText()
-        {
-            return character;
-        }
-    }
-
-    public class ActionButton : IButton
-    {
-        private readonly CalculatorAction action;
-        private RenderFragment result;
-
-        public ActionButton(CalculatorAction action)
-        {
-            this.action = action;
-        }
-
-        public RenderFragment getButton(Action updateCalculation)
-        {
-            result = b =>
-            {
-                b.OpenElement(1, "button");
-
-                b.AddAttribute(1, "id", getDisplayText());
-                b.AddAttribute(1, "class", "digit-button");
-                b.AddAttribute(1, "onClick", updateCalculation);
-
-                b.AddContent(1, getDisplayText());
-
-                b.CloseElement();
-            };
-            return result;
-        }
-        public string getDisplayText()
-        {
-            switch (action)
+            switch (calculatorAction)
             {
                 case CalculatorAction.Equals:
-                    return "=";
+                    DisplayText = "=";
+                    break;
                 case CalculatorAction.Add:
-                    return "+";
+                    DisplayText = "+";
+                    break;
                 case CalculatorAction.Subtract:
-                    return "-";
+                    DisplayText = "-";
+                    break;
                 case CalculatorAction.Multiply:
-                    return "x";
+                    DisplayText = "x";
+                    break;
                 case CalculatorAction.Divide:
-                    return "÷";
+                    DisplayText = "÷";
+                    break;
                 default:
-                    throw new ArgumentException($"Not a valid calculator action: {action.ToString()}");
+                    throw new ArgumentException($"Not a valid CalculatorAction: {calculatorAction.ToString()}");
             }
         }
     }

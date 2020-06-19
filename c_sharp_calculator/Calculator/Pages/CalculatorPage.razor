@@ -9,13 +9,13 @@
     private List<string> currentCalculation = new List<string>();
     private List<string> operators = new List<string> { "+", "-", "x", "÷" };
 
-    private void updateCurrentCalculation(IButton button) { 
-        if (button.getDisplayText() == "." && currentCalculation.Contains("."))
+    private void updateCurrentCalculation(Button button) { 
+        if (button.DisplayText == "." && currentCalculation.Contains("."))
         {
             return;
         }
 
-        if (button.getDisplayText() == "+/-")
+        if (button.DisplayText == "+/-")
         {
             if (currentCalculation.Contains("-"))
             {
@@ -29,11 +29,11 @@
             return;
         }
 
-        if (operators.Contains(button.getDisplayText()))
+        if (operators.Contains(button.DisplayText))
         {
             if (currentCalculation.Count == 0)
             {
-                currentCalculation.AddRange(new List<string> { "0", button.getDisplayText() });
+                currentCalculation.AddRange(new List<string> { "0", button.DisplayText });
             }
             else if (operators.Contains(currentCalculation[currentCalculation.Count - 1]))
             {
@@ -41,12 +41,12 @@
             }
         }
 
-        currentCalculation.Add(button.getDisplayText());
+        currentCalculation.Add(button.DisplayText);
     }
 
-    private void ReplaceLastOperator(IButton button)
+    private void ReplaceLastOperator(Button button)
     {
         currentCalculation.RemoveAt(currentCalculation.Count - 1);
-        currentCalculation.Add(button.getDisplayText());
+        currentCalculation.Add(button.DisplayText);
     }
 }
