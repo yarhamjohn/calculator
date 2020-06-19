@@ -16,7 +16,7 @@
 
 <SnapshotTest Description="Counter starts at zero">
     <TestInput>
-        <Counter />
+        <CounterRazorTestComponent />
     </TestInput>
     <ExpectedOutput>
         <h1>Counter</h1>
@@ -27,7 +27,7 @@
 
 <Fixture Description="Clicking button increments counter" Test="Test">
     <ComponentUnderTest>
-        <Counter></Counter>
+        <CounterRazorTestComponent></CounterRazorTestComponent>
     </ComponentUnderTest>
     <Fragment>
         <p>Current count: 1</p>
@@ -39,7 +39,7 @@
     public void Test(Fixture fixture)
     {
         // Arrange
-        var cut = fixture.GetComponentUnderTest<Counter>();
+        var cut = fixture.GetComponentUnderTest<CounterRazorTestComponent>();
 
         // Act - click button to increment counter
         cut.Find("button").Click();
