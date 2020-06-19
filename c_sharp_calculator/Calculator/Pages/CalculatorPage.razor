@@ -2,44 +2,51 @@
 
 <h1 class="mb-5">Calculator</h1>
 
-<div class="card calculation-card">
-    <div class="card-header calculation-card-header">
-        @calculation.GetCalculation()
-    </div>
-    <div class="card-body calculation-card-text">
-        @Calc.Calculate(@calculation)
-    </div>
-</div>
-<div class="button-container">
-    @foreach (var row in @buttons) {
-        @if (row.Count() == 1) {
-        <div class="button-container-row-single">
-            @foreach (var button in row) {
-                <button id=@button.DisplayText class="digit-button" @onclick="@(() => @calculation.UpdateCalculation(@button))">@button.DisplayText</button>
-            }
-        </div>
-        } else {
-        <div class="button-container-row">
-            @foreach (var button in row) {
-                <button id=@button.DisplayText class="digit-button" @onclick="@(() => @calculation.UpdateCalculation(@button))">@button.DisplayText</button>
-            }
-        </div>
-        }
-    }
-</div>
-
-
-
+<Display currentCalculation=@currentCalculation />
+<Keypad updateCurrentCalculation=@updateCurrentCalculation />
 
 @code {
-    List<List<Button>> buttons = new List<List<Button>>()
-    {
-    new List<Button>() { new Button("÷")},
-    new List<Button>() { new Button("7"), new Button("8"), new Button("9"), new Button("x") },
-    new List<Button>() { new Button("4"), new Button("5"), new Button("6"), new Button("-") },
-    new List<Button>() { new Button("1"), new Button("2"), new Button("3"), new Button("+") },
-    new List<Button>() { new Button("+/-"), new Button("0"), new Button("."), new Button("=") }
-    };
+    private List<string> currentCalculation = new List<string>();
+    private List<string> operators = new List<string> { "+", "-", "x", "÷" };
 
-    Calculation calculation = new Calculation();
+    private void updateCurrentCalculation(IButton button) { 
+        if (button.getDisplayText() == "." && currentCalculation.Contains("."))
+        {
+            return;
+        }
+
+        if (button.getDisplayText() == "+/-")
+        {
+            if (currentCalculation.Contains("-"))
+            {
+                currentCalculation.Remove("-");
+            }
+            else
+            {
+                currentCalculation.Insert(0, "-");
+            }
+
+            return;
+        }
+
+        if (operators.Contains(button.getDisplayText()))
+        {
+            if (currentCalculation.Count == 0)
+            {
+                currentCalculation.AddRange(new List<string> { "0", button.getDisplayText() });
+            }
+            else if (operators.Contains(currentCalculation[currentCalculation.Count - 1]))
+            {
+                ReplaceLastOperator(button);
+            }
+        }
+
+        currentCalculation.Add(button.getDisplayText());
+    }
+
+    private void ReplaceLastOperator(IButton button)
+    {
+        currentCalculation.RemoveAt(currentCalculation.Count - 1);
+        currentCalculation.Add(button.getDisplayText());
+    }
 }

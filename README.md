@@ -1,0 +1,1 @@
+To run with hot reloading: dotnet watch run debug

@@ -1,21 +1,28 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+<div class="card calculation-card">
+    <div class="card-header calculation-card-header">
+        @GetCalculation()
+    </div>
+    <div class="card-body calculation-card-text">
+        @Calculate(@currentCalculation)
+    </div>
+</div>
 
-public static class Calc
-{
-    public static decimal Calculate(Calculation calculation)
+@code {
+    [Parameter]
+    public List<string> currentCalculation { get; set; }
+
+    private string GetCalculation() { return string.Join("", currentCalculation).Trim(); }
+
+    public decimal Calculate(List<string> calculation)
     {
-        System.Console.WriteLine(string.Join("", calculation.Current));
-        if (calculation.Current.Count == 0)
+        if (calculation.Count == 0)
         {
             return 0;
         }
 
-        if (IsADecimal(calculation.Current))
+        if (IsADecimal(calculation))
         {
-            return Convert.ToDecimal(string.Join("", calculation.Current));
+            return Convert.ToDecimal(string.Join("", calculation));
         }
 
         List<string> chunks = GetCalculationChunks(calculation);
@@ -57,33 +64,30 @@ public static class Calc
         return runningTotal;
     }
 
-    private static List<string> GetCalculationChunks(Calculation calculation)
+    private List<string> GetCalculationChunks(List<string> calculation)
     {
         StringBuilder activeChunk = new StringBuilder();
         List<string> chunks = new List<string>();
 
-        for (int i = 0; i < calculation.Current.Count; i++)
+        for (int i = 0; i < calculation.Count; i++)
         {
-            if (IsADecimal(new List<string> { calculation.Current[i] }))
+            if (IsADecimal(new List<string> { calculation[i] }))
             {
-                activeChunk.Append(calculation.Current[i]);
+                activeChunk.Append(calculation[i]);
             }
             else
             {
                 chunks.Add(activeChunk.ToString());
                 activeChunk.Clear();
-                chunks.Add(calculation.Current[i]);
+                chunks.Add(calculation[i]);
             }
         }
 
         return chunks;
     }
 
-    private static bool IsADecimal(List<string> current)
+    private bool IsADecimal(List<string> current)
     {
-        System.Console.WriteLine(current);
-        System.Console.WriteLine(string.Join("", current.Distinct()));
-        System.Console.WriteLine(string.Join("", current.Distinct().Except(new List<string> { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "-" })));
         return current
         .Distinct()
         .Except(new List<string> { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "-" })

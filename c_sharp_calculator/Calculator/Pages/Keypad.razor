@@ -1,0 +1,36 @@
+<div class="button-container">
+    @foreach (var row in @buttons) {
+        @if (row.Count() == 1) {
+        <div class="button-container-row-single">
+            @foreach (var button in row) {
+<button id=@button.getDisplayText() class="digit-button" @onclick="@(() => @Update(@button))">@button.getDisplayText()</button>   
+            }
+        </div>
+        } else {
+        <div class="button-container-row">
+            @foreach (var button in row) {
+<button id=@button.getDisplayText() class="digit-button" @onclick="@(() => @Update(@button))">@button.getDisplayText()</button>   
+            }
+        </div>
+        }
+    }
+</div>
+
+
+
+
+@code {
+    List<List<IButton>> buttons = new List<List<IButton>>()
+    {
+    new List<IButton>() { new ActionButton(CalculatorAction.Divide)},
+    new List<IButton>() { new NumberButton(7),new NumberButton(8), new NumberButton(9), new ActionButton(CalculatorAction.Multiply) },
+    new List<IButton>() { new NumberButton(4), new NumberButton(5), new NumberButton(6), new ActionButton(CalculatorAction.Subtract) },
+    new List<IButton>() { new NumberButton(1), new NumberButton(2), new NumberButton(3), new ActionButton(CalculatorAction.Add) },
+    new List<IButton>() { new CharacterButton("+/-"), new NumberButton(0), new CharacterButton("."), new ActionButton(CalculatorAction.Multiply) }
+    };
+
+        [Parameter]
+    public EventCallback<IButton> updateCurrentCalculation { get; set; }
+
+    private async Task Update(IButton button) { await updateCurrentCalculation.InvokeAsync(button);}
+}
