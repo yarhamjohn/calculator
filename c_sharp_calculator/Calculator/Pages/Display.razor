@@ -19,7 +19,28 @@
             return "";
         }
 
+        if (currentCalculation.Contains("."))
+        {
+            RemoveTrailingDecimal(currentCalculation);
+        }
+
         return AddSpacing(currentCalculation);
+    }
+
+    private void RemoveTrailingDecimal(List<string> calculation)
+    {
+        var decimalPosition = calculation.IndexOf(".");
+        if (calculation.Count == decimalPosition + 1)
+        {
+            return;
+        }
+
+        if (operators.Contains(calculation[decimalPosition + 1]))
+        {
+            calculation.RemoveAt(decimalPosition);
+        }
+
+        return;
     }
 
     private string AddSpacing(List<string> calculation)
