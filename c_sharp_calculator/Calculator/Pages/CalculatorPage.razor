@@ -18,23 +18,21 @@
 
         if (button.DisplayText == "." && currentCalculation.Count() == 0)
         {
-            currentCalculation.Add("0");
-            currentCalculation.Add(button.DisplayText);
+            currentCalculation.AddRange(new[] { "0", button.DisplayText });
             return;
         }
 
         if (button.DisplayText == "+/-")
         {
             if (currentCalculation.Count == 0) { return; }
-            else if (currentCalculation[0] == "-")
+
+            if (currentCalculation[0] == "-")
             {
                 currentCalculation.RemoveAt(0);
-            }
-            else
-            {
-                currentCalculation.Insert(0, "-");
+                return;
             }
 
+            currentCalculation.Insert(0, "-");
             return;
         }
 
