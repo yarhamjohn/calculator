@@ -12,6 +12,7 @@ namespace Calculator.Tests
         [InlineData(new[] { "1", "+/-", "0" }, "-10", "")]
         [InlineData(new[] { "1", ".", "2" }, "1.2", "")]
         [InlineData(new[] { "1", "=", "2" }, "2", "1 =")]
+        [InlineData(new[] { "1", "+", "2" }, "2", "1 +")]
         public void ClickingNumberButton_CorrectlySetsCalculationAndResult(string[] setupButtons, string expectedResult, string expectedCalculation)
         {
             var cut = RenderComponent<CalculatorPage>();
