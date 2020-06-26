@@ -7,7 +7,7 @@
 
 @code {
     private List<string> currentCalculation = new List<string>();
-    private List<string> operators = new List<string> { "+", "-", "x", "÷", "=" };
+    private List<string> operators = new List<string> { "+", "-", "x", "÷" };
 
     private void updateCurrentCalculation(Button button)
     {
@@ -22,35 +22,40 @@
             HandleSignChange();
             return;
         }
-@* 
-        if (operators.Contains(button.DisplayText))
+
+        if (button.DisplayText == "=")
         {
-            if (currentCalculation.Count == 0)
-            {
-                currentCalculation.AddRange(new List<string> { "0", button.DisplayText });
-            }
-            else if (operators.Contains(currentCalculation[currentCalculation.Count - 1]))
-            {
-                ReplaceLastOperator(button);
-            }
-                return;
-        } *@
+            HandleEquals();
+            return;
+        }
 
         if (operators.Contains(button.DisplayText))
         {
             if (currentCalculation.Count == 0)
             {
                 currentCalculation.AddRange(new List<string> { "0", button.DisplayText });
+                return;
             }
             else if (operators.Contains(currentCalculation[currentCalculation.Count - 1]))
             {
-                ReplaceLastOperator(button);
+                ReplaceLastOperator(button.DisplayText);
             }
-                return;
 
         }
 
         currentCalculation.Add(button.DisplayText);
+    }
+
+    private void HandleEquals()
+    {
+        if (currentCalculation.Count == 0)
+        {
+            currentCalculation.AddRange(new List<string> { "0", "=" });
+            return;
+        }
+
+        currentCalculation.Add("=");
+        return;
     }
 
     private void HandleDecimal()
@@ -84,9 +89,9 @@
         return;
     }
 
-    private void ReplaceLastOperator(Button button)
+    private void ReplaceLastOperator(string displayText)
     {
         currentCalculation.RemoveAt(currentCalculation.Count - 1);
-        currentCalculation.Add(button.DisplayText);
+        currentCalculation.Add(displayText);
     }
 }
