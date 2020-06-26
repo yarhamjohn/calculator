@@ -11,45 +11,77 @@
 
     private void updateCurrentCalculation(Button button)
     {
-        if (button.DisplayText == "." && currentCalculation.Contains("."))
+        if (button.DisplayText == ".")
         {
-            return;
-        }
-
-        if (button.DisplayText == "." && currentCalculation.Count() == 0)
-        {
-            currentCalculation.AddRange(new[] { "0", button.DisplayText });
+            HandleDecimal();
             return;
         }
 
         if (button.DisplayText == "+/-")
         {
-            if (currentCalculation.Count == 0) { return; }
-
-            if (currentCalculation[0] == "-")
-            {
-                currentCalculation.RemoveAt(0);
-                return;
-            }
-
-            currentCalculation.Insert(0, "-");
+            HandleSignChange();
             return;
         }
+@* 
+        if (operators.Contains(button.DisplayText))
+        {
+            if (currentCalculation.Count == 0)
+            {
+                currentCalculation.AddRange(new List<string> { "0", button.DisplayText });
+            }
+            else if (operators.Contains(currentCalculation[currentCalculation.Count - 1]))
+            {
+                ReplaceLastOperator(button);
+            }
+                return;
+        } *@
 
         if (operators.Contains(button.DisplayText))
         {
             if (currentCalculation.Count == 0)
             {
                 currentCalculation.AddRange(new List<string> { "0", button.DisplayText });
-                return;
             }
             else if (operators.Contains(currentCalculation[currentCalculation.Count - 1]))
             {
                 ReplaceLastOperator(button);
             }
+                return;
+
         }
 
         currentCalculation.Add(button.DisplayText);
+    }
+
+    private void HandleDecimal()
+    {
+        if (currentCalculation.Contains("."))
+        {
+            return;
+        }
+
+        if (currentCalculation.Count() == 0)
+        {
+            currentCalculation.AddRange(new[] { "0", "." });
+            return;
+        }
+
+        currentCalculation.Add(".");
+        return;
+    }
+
+    private void HandleSignChange()
+    {
+        if (currentCalculation.Count == 0) { return; }
+
+        if (currentCalculation[0] == "-")
+        {
+            currentCalculation.RemoveAt(0);
+            return;
+        }
+
+        currentCalculation.Insert(0, "-");
+        return;
     }
 
     private void ReplaceLastOperator(Button button)
