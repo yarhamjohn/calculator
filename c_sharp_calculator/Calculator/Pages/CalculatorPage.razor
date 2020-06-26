@@ -113,6 +113,29 @@
 
     private void UpdateInput(Button button)
     {
+        if (button.DisplayText == "C")
+        {
+            currentInput.Clear();
+            currentCalculation.Clear();
+            allCalculations.Clear();
+            return;
+        }
+
+        if (button.DisplayText == "CE")
+        {
+            currentInput.Clear();
+            return;
+        }
+
+        if (button.DisplayText == "<-")
+        {
+            if (currentInput.Count == 0) { return; }
+            currentInput.RemoveAt(currentInput.Count - 1);
+
+            if (currentInput.Count == 1 && currentInput[0] == "-") { currentInput.Clear(); }
+            return;
+        }
+
         if (button.DisplayText == ".")
         {
             HandleDecimal();
