@@ -39,6 +39,9 @@
 
     private string GetResult()
     {
+        System.Console.WriteLine("currentCalculation: " + string.Join("", currentCalculation));
+        System.Console.WriteLine("currentInput: " + string.Join("", currentInput));
+
         var calculation = currentCalculation.Count == 0 ? currentInput : currentCalculation;
         if (calculation.Count == 0)
         {
@@ -157,18 +160,9 @@
 
         if (operators.Contains(button.DisplayText))
         {
-            if (currentInput.Count == 0)
-            {
-                currentInput.AddRange(new List<string> { "0", button.DisplayText });
-                return;
-            }
-            else if (operators.Contains(currentInput[currentInput.Count - 1]))
-            {
-                ReplaceLastOperator(button.DisplayText);
-            }
-
+            HandleOperator(button.DisplayText);
             PromoteToCalculation();
-
+            return;
         }
 
         HandleNumber(button.DisplayText);
@@ -189,6 +183,23 @@
 
         if (currentInput[currentInput.Count - 1] == "=")
         {
+            return;
+        }
+
+        currentInput.Add(displayText);
+        return;
+    }
+
+    private void HandleOperator(string displayText)
+    {
+        if (currentInput.Count == 0)
+        {
+            currentInput.AddRange(new List<string> { "0", displayText });
+            return;
+        }
+        else if (operators.Contains(currentInput[currentInput.Count - 1]))
+        {
+            ReplaceLastOperator(displayText);
             return;
         }
 
