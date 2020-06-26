@@ -1,6 +1,4 @@
 using System;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 
 namespace Calculator.Pages
 {
@@ -17,6 +15,7 @@ namespace Calculator.Pages
         {
             DisplayText = character;
         }
+
         public Button(CalculatorAction calculatorAction)
         {
             switch (calculatorAction)

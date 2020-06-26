@@ -10,17 +10,35 @@
 @code {
     [Parameter]
     public List<string> currentCalculation { get; set; }
+    private List<string> operators = new List<string> { "+", "-", "x", "÷", "=" };
 
-    private string GetDisplayedCalculation() { 
-        var stringedCalculation = string.Join("", currentCalculation).Trim();
-        Console.WriteLine(stringedCalculation);
-
+    private string GetDisplayedCalculation()
+    {
         if (IsADecimal(currentCalculation))
         {
             return "";
         }
-    
-        return stringedCalculation;
+
+        return AddSpacing(currentCalculation);
+    }
+
+    private string AddSpacing(List<string> calculation)
+    {
+        var formatted = new StringBuilder();
+        for (var i = 0; i < calculation.Count; i++)
+        {
+            var isNegativeSign = i == 0 && calculation[i] == "-";
+            if (operators.Contains(calculation[i]) && !isNegativeSign)
+            {
+                formatted.Append($" {calculation[i]} ");
+            }
+            else
+            {
+                formatted.Append(calculation[i]);
+            }
+        }
+
+        return formatted.ToString();
     }
 
     public string Calculate()

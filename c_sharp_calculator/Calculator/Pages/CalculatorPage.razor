@@ -25,9 +25,10 @@
 
         if (button.DisplayText == "+/-")
         {
-            if (currentCalculation.Contains("-"))
+            if (currentCalculation.Count == 0) { return; }
+            else if (currentCalculation[0] == "-")
             {
-                currentCalculation.Remove("-");
+                currentCalculation.RemoveAt(0);
             }
             else
             {
