@@ -2,24 +2,14 @@
 
 <h1 class="mb-5">Calculator</h1>
 
-<Display currentCalculation=@GetDisplayCalculation() result=@Calculate() />
-<Keypad updateCurrentCalculation=@Update />
+<Display Calculation=@GetCalculation() Result=@GetResult() />
+<Keypad Update=@Update />
 
 @code {
     private List<string> temporaryCalculation = new List<string>();
     private List<string> currentCalculation = new List<string>();
     private List<List<string>> allCalculations = new List<List<string>>();
     private List<string> operators = new List<string> { "+", "-", "x", "÷" };
-
-    private List<string> GetDisplayCalculation()
-    {
-        Console.WriteLine(string.Join("", currentCalculation));
-        allCalculations.ForEach(c => System.Console.WriteLine(string.Join("", c)));
-
-        if (allCalculations.Count == 0) { return currentCalculation; }
-        if (currentCalculation.Count == 0) { return allCalculations.Last(); }
-        return currentCalculation;
-    }
 
     private void Update(Button button)
     {
@@ -37,7 +27,18 @@
         updateCurrentCalculation(button);
     }
 
-    private string Calculate()
+    private List<string> GetCalculation()
+    {
+        Console.WriteLine(string.Join("", currentCalculation));
+        allCalculations.ForEach(c => System.Console.WriteLine(string.Join("", c)));
+
+        if (allCalculations.Count == 0) { return currentCalculation; }
+        if (currentCalculation.Count == 0) { return allCalculations.Last(); }
+        return currentCalculation;
+    }
+
+
+    private string GetResult()
     {
         var calculation = currentCalculation.Count == 0 ? temporaryCalculation : currentCalculation;
         if (calculation.Count == 0)
@@ -182,7 +183,7 @@
         }
         else if (temporaryCalculation[temporaryCalculation.Count - 1] == "=")
         {
-            temporaryCalculation = Calculate().Split().ToList();
+            temporaryCalculation = GetResult().Split().ToList();
             temporaryCalculation.Add("=");
             return;
         }

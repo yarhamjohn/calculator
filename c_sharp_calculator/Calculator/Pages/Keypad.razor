@@ -3,13 +3,13 @@
         @if (row.Count() == 1) {
         <div class="button-container-row-single">
             @foreach (var button in row) {
-<button id=@button.DisplayText class="digit-button" @onclick="@(() => @Update(@button))">@button.DisplayText</button>   
+<button id=@button.DisplayText class="digit-button" @onclick="@(() => @HandleButtonClick(@button))">@button.DisplayText</button>   
             }
         </div>
         } else {
         <div class="button-container-row">
             @foreach (var button in row) {
-<button id=@button.DisplayText class="digit-button" @onclick="@(() => @Update(@button))">@button.DisplayText</button>   
+<button id=@button.DisplayText class="digit-button" @onclick="@(() => @HandleButtonClick(@button))">@button.DisplayText</button>   
             }
         </div>
         }
@@ -29,8 +29,8 @@
     new List<Button>() { new Button("+/-"), new Button(0), new Button("."), new Button(CalculatorAction.Equals) }
     };
 
-        [Parameter]
-    public EventCallback<Button> updateCurrentCalculation { get; set; }
+    [Parameter]
+    public EventCallback<Button> Update { get; set; }
 
-    private async Task Update(Button button) { await updateCurrentCalculation.InvokeAsync(button);}
+    private async Task HandleButtonClick(Button button) { await Update.InvokeAsync(button); }
 }
