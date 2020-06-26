@@ -10,6 +10,7 @@
     private List<string> currentCalculation = new List<string>();
     private List<List<string>> allCalculations = new List<List<string>>();
     private List<string> operators = new List<string> { "+", "-", "x", "÷" };
+    private bool isPartialCalculation = false;
 
     private void Update(Button button)
     {
@@ -42,7 +43,7 @@
         System.Console.WriteLine("currentCalculation: " + string.Join("", currentCalculation));
         System.Console.WriteLine("currentInput: " + string.Join("", currentInput));
 
-        var calculation = currentCalculation.Count == 0 ? currentInput : currentCalculation;
+        var calculation = currentCalculation.Count == 0 || isPartialCalculation ? currentInput : currentCalculation;
         if (calculation.Count == 0)
         {
             return "0";
@@ -155,6 +156,7 @@
         {
             HandleEquals();
             PromoteToCalculation();
+            isPartialCalculation = false;
             return;
         }
 
@@ -162,6 +164,7 @@
         {
             HandleOperator(button.DisplayText);
             PromoteToCalculation();
+            isPartialCalculation = true;
             return;
         }
 
@@ -175,6 +178,7 @@
 
     private void HandleNumber(string displayText)
     {
+        if (isPartialCalculation) { currentInput = new List<string> { displayText }; return; }
         if (currentInput.Count == 0)
         {
             currentInput.Add(displayText);
@@ -219,6 +223,11 @@
             currentInput = GetResult().Split().ToList();
             currentInput.Add("=");
             return;
+        }
+
+        if (isPartialCalculation)
+        {
+            currentInput = ((string[])currentCalculation.ToArray().Clone()).ToList().Concat(currentInput).ToList();
         }
 
         currentInput.Add("=");
