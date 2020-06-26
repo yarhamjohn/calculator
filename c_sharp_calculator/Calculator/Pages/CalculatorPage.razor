@@ -116,7 +116,24 @@
 
         }
 
-        currentCalculation.Add(button.DisplayText);
+        HandleNumber(button.DisplayText);
+    }
+
+    private void HandleNumber(string displayText)
+    {
+        if (currentCalculation.Count == 0)
+        {
+            currentCalculation.Add(displayText);
+            return;
+        }
+
+        if (currentCalculation[currentCalculation.Count - 1] == "=")
+        {
+            return;
+        }
+
+        currentCalculation.Add(displayText);
+        return;
     }
 
     private void HandleEquals()
