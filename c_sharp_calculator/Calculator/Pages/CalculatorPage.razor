@@ -6,21 +6,24 @@
 <Keypad Update=@Update />
 
 @code {
-    private List<string> temporaryCalculation = new List<string>();
+    private List<string> currentInput = new List<string>();
     private List<string> currentCalculation = new List<string>();
     private List<List<string>> allCalculations = new List<List<string>>();
     private List<string> operators = new List<string> { "+", "-", "x", "÷" };
 
     private void Update(Button button)
     {
-        var previousButtonWasEquals = currentCalculation.Count > 0 && currentCalculation[currentCalculation.Count - 1] == "=";
-        if (previousButtonWasEquals)
+        var finishedPreviousCalculation = currentCalculation.Count > 0 && currentCalculation[currentCalculation.Count - 1] == "=";
+        if (finishedPreviousCalculation)
         {
-            allCalculations.Add(((string[])currentCalculation.ToArray().Clone()).ToList());
-            if (button.DisplayText != "=")
+            var previousCalculation = (string[])currentCalculation.ToArray().Clone();
+            allCalculations.Add(previousCalculation.ToList());
+
+            var startingNewCalculation = button.DisplayText != "=";
+            if (startingNewCalculation)
             {
                 currentCalculation = new List<string>();
-                temporaryCalculation = new List<string>();
+                currentInput = new List<string>();
             }
         }
 
@@ -29,18 +32,14 @@
 
     private List<string> GetCalculation()
     {
-        Console.WriteLine(string.Join("", currentCalculation));
-        allCalculations.ForEach(c => System.Console.WriteLine(string.Join("", c)));
-
-        if (allCalculations.Count == 0) { return currentCalculation; }
-        if (currentCalculation.Count == 0) { return allCalculations.Last(); }
+        var nextCalculationNotStarted = allCalculations.Count > 0 && currentCalculation.Count == 0;
+        if (nextCalculationNotStarted) { return allCalculations.Last(); }
         return currentCalculation;
     }
 
-
     private string GetResult()
     {
-        var calculation = currentCalculation.Count == 0 ? temporaryCalculation : currentCalculation;
+        var calculation = currentCalculation.Count == 0 ? currentInput : currentCalculation;
         if (calculation.Count == 0)
         {
             return "0";
@@ -135,12 +134,12 @@
 
         if (operators.Contains(button.DisplayText))
         {
-            if (temporaryCalculation.Count == 0)
+            if (currentInput.Count == 0)
             {
-                temporaryCalculation.AddRange(new List<string> { "0", button.DisplayText });
+                currentInput.AddRange(new List<string> { "0", button.DisplayText });
                 return;
             }
-            else if (operators.Contains(temporaryCalculation[temporaryCalculation.Count - 1]))
+            else if (operators.Contains(currentInput[currentInput.Count - 1]))
             {
                 ReplaceLastOperator(button.DisplayText);
             }
@@ -154,79 +153,79 @@
 
     private void Promote()
     {
-        currentCalculation = ((string[])temporaryCalculation.ToArray().Clone()).ToList();
+        currentCalculation = ((string[])currentInput.ToArray().Clone()).ToList();
     }
 
     private void HandleNumber(string displayText)
     {
-        if (temporaryCalculation.Count == 0)
+        if (currentInput.Count == 0)
         {
-            temporaryCalculation.Add(displayText);
+            currentInput.Add(displayText);
             return;
         }
 
-        if (temporaryCalculation[temporaryCalculation.Count - 1] == "=")
+        if (currentInput[currentInput.Count - 1] == "=")
         {
             return;
         }
 
-        temporaryCalculation.Add(displayText);
+        currentInput.Add(displayText);
         return;
     }
 
     private void HandleEquals()
     {
-        if (temporaryCalculation.Count == 0)
+        if (currentInput.Count == 0)
         {
-            temporaryCalculation.AddRange(new List<string> { "0", "=" });
+            currentInput.AddRange(new List<string> { "0", "=" });
             return;
         }
-        else if (temporaryCalculation[temporaryCalculation.Count - 1] == "=")
+        else if (currentInput[currentInput.Count - 1] == "=")
         {
-            temporaryCalculation = GetResult().Split().ToList();
-            temporaryCalculation.Add("=");
+            currentInput = GetResult().Split().ToList();
+            currentInput.Add("=");
             return;
         }
 
-        temporaryCalculation.Add("=");
+        currentInput.Add("=");
         return;
     }
 
     private void HandleDecimal()
     {
-        if (temporaryCalculation.Contains("."))
+        if (currentInput.Contains("."))
         {
             return;
         }
 
-        if (temporaryCalculation.Count() == 0)
+        if (currentInput.Count() == 0)
         {
-            temporaryCalculation.AddRange(new[] { "0", "." });
+            currentInput.AddRange(new[] { "0", "." });
             return;
         }
 
-        temporaryCalculation.Add(".");
+        currentInput.Add(".");
         return;
     }
 
     private void HandleSignChange()
     {
-        if (temporaryCalculation.Count == 0) { return; }
+        if (currentInput.Count == 0) { return; }
 
-        if (temporaryCalculation[0] == "-")
+        if (currentInput[0] == "-")
         {
-            temporaryCalculation.RemoveAt(0);
+            currentInput.RemoveAt(0);
             return;
         }
 
-        temporaryCalculation.Insert(0, "-");
+        currentInput.Insert(0, "-");
         return;
     }
 
     private void ReplaceLastOperator(string displayText)
     {
-        temporaryCalculation.RemoveAt(temporaryCalculation.Count - 1);
-        temporaryCalculation.Add(displayText);
+        currentInput.RemoveAt(currentInput.Count - 1);
+        currentInput.Add(displayText);
     }
 
     private bool IsADecimal(List<string> calculation)
