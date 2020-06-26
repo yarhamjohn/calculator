@@ -2,12 +2,85 @@
 
 <h1 class="mb-5">Calculator</h1>
 
-<Display currentCalculation=@currentCalculation />
+<Display currentCalculation=@currentCalculation result=@Calculate() />
 <Keypad updateCurrentCalculation=@updateCurrentCalculation />
 
 @code {
     private List<string> currentCalculation = new List<string>();
     private List<string> operators = new List<string> { "+", "-", "x", "÷" };
+
+    private string Calculate()
+    {
+        if (currentCalculation.Count == 0)
+        {
+            return "0";
+        }
+
+        if (IsADecimal(currentCalculation))
+        {
+            return string.Join("", currentCalculation).Trim();
+        }
+
+        List<string> chunks = GetCalculationChunks(currentCalculation);
+
+        decimal runningTotal = 0;
+        string activeOperator = null;
+        for (int i = 0; i < chunks.Count; i++)
+        {
+            var isDecimal = Decimal.TryParse(chunks[i], out var chunk);
+
+            if (isDecimal && activeOperator == null)
+            {
+                runningTotal = chunk;
+            }
+            else if (isDecimal && activeOperator != null)
+            {
+                switch (activeOperator)
+                {
+                    case "+":
+                        runningTotal += chunk;
+                        break;
+                    case "-":
+                        runningTotal -= chunk;
+                        break;
+                    case "x":
+                        runningTotal *= chunk;
+                        break;
+                    case "÷":
+                        runningTotal /= chunk;
+                        break;
+                }
+            }
+            else
+            {
+                activeOperator = chunks[i];
+            }
+        }
+
+        return runningTotal.ToString();
+    }
+
+    private List<string> GetCalculationChunks(List<string> calculation)
+    {
+        StringBuilder activeChunk = new StringBuilder();
+        List<string> chunks = new List<string>();
+
+        for (int i = 0; i < calculation.Count; i++)
+        {
+            if (IsADecimal(new List<string> { calculation[i] }))
+            {
+                activeChunk.Append(calculation[i]);
+            }
+            else
+            {
+                chunks.Add(activeChunk.ToString());
+                activeChunk.Clear();
+                chunks.Add(calculation[i]);
+            }
+        }
+
+        return chunks;
+    }
 
     private void updateCurrentCalculation(Button button)
     {
@@ -53,6 +126,12 @@
             currentCalculation.AddRange(new List<string> { "0", "=" });
             return;
         }
+        else if (currentCalculation[currentCalculation.Count - 1] == "=")
+        {
+            currentCalculation = Calculate().Split().ToList();
+            currentCalculation.Add("=");
+            return;
+        }
 
         currentCalculation.Add("=");
         return;
@@ -93,5 +172,13 @@
     {
         currentCalculation.RemoveAt(currentCalculation.Count - 1);
         currentCalculation.Add(displayText);
+    }
+
+    private bool IsADecimal(List<string> calculation)
+    {
+        return calculation
+        .Distinct()
+        .Except(new List<string> { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "-" })
+        .Count() == 0;
     }
 }
