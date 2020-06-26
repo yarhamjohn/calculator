@@ -2,26 +2,51 @@
 
 <h1 class="mb-5">Calculator</h1>
 
-<Display currentCalculation=@currentCalculation result=@Calculate() />
-<Keypad updateCurrentCalculation=@updateCurrentCalculation />
+<Display currentCalculation=@GetDisplayCalculation() result=@Calculate() />
+<Keypad updateCurrentCalculation=@Update />
 
 @code {
+    private List<string> temporaryCalculation = new List<string>();
     private List<string> currentCalculation = new List<string>();
+    private List<List<string>> allCalculations = new List<List<string>>();
     private List<string> operators = new List<string> { "+", "-", "x", "÷" };
+
+    private List<string> GetDisplayCalculation()
+    {
+        Console.WriteLine(string.Join("", currentCalculation));
+        allCalculations.ForEach(c => System.Console.WriteLine(string.Join("", c)));
+
+        if (allCalculations.Count == 0) { return currentCalculation; }
+        if (currentCalculation.Count == 0) { return allCalculations.Last(); }
+        return currentCalculation;
+    }
+
+    private void Update(Button button)
+    {
+        if (currentCalculation.Count > 0 && currentCalculation[currentCalculation.Count - 1] == "=")
+        {
+            allCalculations.Add(((string[])currentCalculation.ToArray().Clone()).ToList());
+            currentCalculation = new List<string>();
+            temporaryCalculation = new List<string>();
+        }
+
+        updateCurrentCalculation(button);
+    }
 
     private string Calculate()
     {
-        if (currentCalculation.Count == 0)
+        var calculation = currentCalculation.Count == 0 ? temporaryCalculation : currentCalculation;
+        if (calculation.Count == 0)
         {
             return "0";
         }
 
-        if (IsADecimal(currentCalculation))
+        if (IsADecimal(calculation))
         {
-            return string.Join("", currentCalculation).Trim();
+            return string.Join("", calculation).Trim();
         }
 
-        List<string> chunks = GetCalculationChunks(currentCalculation);
+        List<string> chunks = GetCalculationChunks(calculation);
 
         decimal runningTotal = 0;
         string activeOperator = null;
@@ -99,96 +124,104 @@
         if (button.DisplayText == "=")
         {
             HandleEquals();
+            Promote();
             return;
         }
 
         if (operators.Contains(button.DisplayText))
         {
-            if (currentCalculation.Count == 0)
+            if (temporaryCalculation.Count == 0)
             {
-                currentCalculation.AddRange(new List<string> { "0", button.DisplayText });
+                temporaryCalculation.AddRange(new List<string> { "0", button.DisplayText });
                 return;
             }
-            else if (operators.Contains(currentCalculation[currentCalculation.Count - 1]))
+            else if (operators.Contains(temporaryCalculation[temporaryCalculation.Count - 1]))
             {
                 ReplaceLastOperator(button.DisplayText);
             }
+
+            Promote();
 
         }
 
         HandleNumber(button.DisplayText);
     }
 
+    private void Promote()
+    {
+        currentCalculation = ((string[])temporaryCalculation.ToArray().Clone()).ToList();
+    }
+
     private void HandleNumber(string displayText)
     {
-        if (currentCalculation.Count == 0)
+        if (temporaryCalculation.Count == 0)
         {
-            currentCalculation.Add(displayText);
+            temporaryCalculation.Add(displayText);
             return;
         }
 
-        if (currentCalculation[currentCalculation.Count - 1] == "=")
+        if (temporaryCalculation[temporaryCalculation.Count - 1] == "=")
         {
             return;
         }
 
-        currentCalculation.Add(displayText);
+        temporaryCalculation.Add(displayText);
         return;
     }
 
     private void HandleEquals()
     {
-        if (currentCalculation.Count == 0)
+        if (temporaryCalculation.Count == 0)
         {
-            currentCalculation.AddRange(new List<string> { "0", "=" });
+            temporaryCalculation.AddRange(new List<string> { "0", "=" });
             return;
         }
-        else if (currentCalculation[currentCalculation.Count - 1] == "=")
+        else if (temporaryCalculation[temporaryCalculation.Count - 1] == "=")
         {
-            currentCalculation = Calculate().Split().ToList();
-            currentCalculation.Add("=");
+            temporaryCalculation = Calculate().Split().ToList();
+            temporaryCalculation.Add("=");
             return;
         }
 
-        currentCalculation.Add("=");
+        temporaryCalculation.Add("=");
         return;
     }
 
     private void HandleDecimal()
     {
-        if (currentCalculation.Contains("."))
+        if (temporaryCalculation.Contains("."))
         {
             return;
         }
 
-        if (currentCalculation.Count() == 0)
+        if (temporaryCalculation.Count() == 0)
         {
-            currentCalculation.AddRange(new[] { "0", "." });
+            temporaryCalculation.AddRange(new[] { "0", "." });
             return;
         }
 
-        currentCalculation.Add(".");
+        temporaryCalculation.Add(".");
         return;
     }
 
     private void HandleSignChange()
     {
-        if (currentCalculation.Count == 0) { return; }
+        if (temporaryCalculation.Count == 0) { return; }
 
-        if (currentCalculation[0] == "-")
+        if (temporaryCalculation[0] == "-")
         {
-            currentCalculation.RemoveAt(0);
+            temporaryCalculation.RemoveAt(0);
             return;
         }
 
-        currentCalculation.Insert(0, "-");
+        temporaryCalculation.Insert(0, "-");
         return;
     }
 
     private void ReplaceLastOperator(string displayText)
     {
-        currentCalculation.RemoveAt(currentCalculation.Count - 1);
-        currentCalculation.Add(displayText);
+        temporaryCalculation.RemoveAt(temporaryCalculation.Count - 1);
+        temporaryCalculation.Add(displayText);
     }
 
     private bool IsADecimal(List<string> calculation)

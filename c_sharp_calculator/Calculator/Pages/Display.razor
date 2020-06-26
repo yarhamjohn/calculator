@@ -18,6 +18,7 @@
 
     private string GetDisplayedCalculation()
     {
+        System.Console.WriteLine("calc: " + string.Join("", currentCalculation));
         if (IsADecimal(currentCalculation))
         {
             return "";
