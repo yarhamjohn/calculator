@@ -23,11 +23,15 @@
 
     private void Update(Button button)
     {
-        if (currentCalculation.Count > 0 && currentCalculation[currentCalculation.Count - 1] == "=")
+        var previousButtonWasEquals = currentCalculation.Count > 0 && currentCalculation[currentCalculation.Count - 1] == "=";
+        if (previousButtonWasEquals)
         {
             allCalculations.Add(((string[])currentCalculation.ToArray().Clone()).ToList());
-            currentCalculation = new List<string>();
-            temporaryCalculation = new List<string>();
+            if (button.DisplayText != "=")
+            {
+                currentCalculation = new List<string>();
+                temporaryCalculation = new List<string>();
+            }
         }
 
         updateCurrentCalculation(button);
