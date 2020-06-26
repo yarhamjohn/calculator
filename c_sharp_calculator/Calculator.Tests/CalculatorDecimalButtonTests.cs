@@ -12,6 +12,7 @@ namespace Calculator.Tests
         [InlineData(new[] { "1", "+/-", "." }, "-1.", "")]
         [InlineData(new[] { "0", ".", "." }, "0.", "")]
         [InlineData(new[] { "0", ".", "1", "." }, "0.1", "")]
+        [InlineData(new[] { "1", "=", "." }, "0.", "1 =")]
         public void ClickingDecimalButton_CorrectlySetsCalculationAndResult(string[] setupButtons, string expectedResult, string expectedCalculation)
         {
             var cut = RenderComponent<CalculatorPage>();

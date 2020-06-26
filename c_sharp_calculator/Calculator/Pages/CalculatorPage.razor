@@ -27,7 +27,7 @@
             }
         }
 
-        updateCurrentCalculation(button);
+        UpdateInput(button);
     }
 
     private List<string> GetCalculation()
@@ -111,7 +111,7 @@
         return chunks;
     }
 
-    private void updateCurrentCalculation(Button button)
+    private void UpdateInput(Button button)
     {
         if (button.DisplayText == ".")
         {
@@ -128,7 +128,7 @@
         if (button.DisplayText == "=")
         {
             HandleEquals();
-            Promote();
+            PromoteToCalculation();
             return;
         }
 
@@ -144,14 +144,14 @@
                 ReplaceLastOperator(button.DisplayText);
             }
 
-            Promote();
+            PromoteToCalculation();
 
         }
 
         HandleNumber(button.DisplayText);
     }
 
-    private void Promote()
+    private void PromoteToCalculation()
     {
         currentCalculation = ((string[])currentInput.ToArray().Clone()).ToList();
     }
