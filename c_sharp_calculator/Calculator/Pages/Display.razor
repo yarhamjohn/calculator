@@ -18,7 +18,6 @@
 
     private string GetDisplayedInput()
     {
-        System.Console.WriteLine("GetDisplayedInput: " + string.Join(";", Input));
         if (Input.Contains("."))
         {
             RemoveTrailingDecimal(Input);
@@ -36,7 +35,6 @@
 
     private string GetDisplayedCalculation()
     {
-        System.Console.WriteLine("GetDisplayedCalculation: " + string.Join(";", Calculation));
         if (IsADecimal(Calculation))
         {
             return "";

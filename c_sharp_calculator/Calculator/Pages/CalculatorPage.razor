@@ -85,7 +85,8 @@
         }
 
         var result = runningTotal.ToString().Select(c => c.ToString()).ToList();
-        if (result[0] == "-") {
+        if (result[0] == "-")
+        {
             result.RemoveAt(0);
             result.Insert(0, "+/-");
         }
@@ -237,14 +238,20 @@
     {
         if (currentCalculation.Count == 0)
         {
-            currentCalculation = ((string[])currentInput.ToArray().Clone()).ToList().Concat(new List<string> { "=" }).ToList();
-        }
-        else if (currentCalculation[currentCalculation.Count - 1] == "=")
-        {
-            //TODO: Something mental here.
-            // 1 + 2 = = 
-            // 3 + 2 = | 5
-            return;
+            if (allCompletedCalculations.Count == 0 || lastCalculationIsASimpleDecimal())
+            {
+                currentCalculation = ((string[])currentInput.ToArray().Clone()).ToList().Concat(new List<string> { "=" }).ToList();
+            }
+            else
+            {
+                var lastCalc = allCompletedCalculations.Last();
+                var chunks = GetCalculationChunks(lastCalc);
+
+                // Get the last operator, right side and equals chunks and prepend the current input
+                var rightSideChunks = chunks.GetRange(chunks.Count - 3, 3);
+                var splitUp = rightSideChunks.SelectMany(c => c.Select(s => s.ToString()).ToList());
+                currentCalculation = ((string[])currentInput.ToArray().Clone()).ToList().Concat(splitUp).ToList();
+            }
         }
         else
         {

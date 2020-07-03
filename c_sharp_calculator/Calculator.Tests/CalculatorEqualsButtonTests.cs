@@ -20,6 +20,7 @@ namespace Calculator.Tests
         [InlineData(new[] { "1", "=", "2", "=" }, "2", "2 =")]
         [InlineData(new[] { "1", "+", "=" }, "2", "1 + 1 =")]
         [InlineData(new[] { "1", "+", "2", "=", "=" }, "5", "3 + 2 =")]
+        [InlineData(new[] { "1", "+", "2", "-", "2", "=", "=" }, "-1", "1 - 2 =")]
         [InlineData(new[] { "1", "+", "CE", "=" }, "1", "1 + 0 =")]
         public void ClickingEqualsButton_CorrectlySetsCalculationAndResult(string[] setupButtons, string expectedResult, string expectedCalculation)
         {
