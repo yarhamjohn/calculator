@@ -172,6 +172,11 @@
 
     private void HandleBackspace()
     {
+        if (inputIsReplaceable)
+        {
+            return;
+        }
+
         currentInput.RemoveAt(currentInput.Count - 1);
 
         var onlyNegativeSignRemains = currentInput.Count == 1 && currentInput[0] == "-";
