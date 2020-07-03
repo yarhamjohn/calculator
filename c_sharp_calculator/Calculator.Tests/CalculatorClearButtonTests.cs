@@ -43,6 +43,7 @@ namespace Calculator.Tests
         [InlineData(new[] { "1", "=", "CE" }, "0", "1 =")]
         [InlineData(new[] { "1", "=", "2", "CE" }, "0", "1 =")]
         [InlineData(new[] { "1", "=", "2", "=", "CE" }, "0", "2 =")]
+        [InlineData(new[] { "1", "+", "CE" }, "0", "1 +")]
         public void ClickingClearEntryButton_CorrectlySetsCalculationAndResult(string[] setupButtons, string expectedResult, string expectedCalculation)
         {
             var cut = RenderComponent<CalculatorPage>();

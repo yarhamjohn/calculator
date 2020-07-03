@@ -8,12 +8,14 @@ namespace Calculator.Tests
     {
         [Theory]
         [InlineData(new[] { "+/-" }, "0", "")]
+        [InlineData(new[] { "0", "+/-" }, "0", "")]
         [InlineData(new[] { "1", "+/-" }, "-1", "")]
         [InlineData(new[] { "1", ".", "+/-" }, "-1.", "")]
         [InlineData(new[] { "1", ".", "2", "+/-" }, "-1.2", "")]
         [InlineData(new[] { "1", "+/-", "+/-" }, "1", "")]
         [InlineData(new[] { "1", "+/-", ".", "+/-" }, "1.", "")]
         [InlineData(new[] { "1", "+/-", ".", "2", "+/-" }, "1.2", "")]
+        [InlineData(new[] { "1", "-", "2", "=", "+/-" }, "negate(-1)", "1")]
         public void ClickingSignButton_CorrectlySetsCalculationAndResult(string[] setupButtons, string expectedResult, string expectedCalculation)
         {
             var cut = RenderComponent<CalculatorPage>();

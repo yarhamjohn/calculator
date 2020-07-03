@@ -3,7 +3,7 @@
         @GetDisplayedCalculation()
     </div>
     <div id="result" class="card-body calculation-card-text">
-        @Result
+        @GetDisplayedInput()
     </div>
 </div>
 
@@ -12,9 +12,24 @@
     public List<string> Calculation { get; set; }
 
     [Parameter]
-    public string Result { get; set; }
+    public List<string> Input { get; set; }
 
     private List<string> operators = new List<string> { "+", "-", "x", "÷", "=" };
+
+    private string GetDisplayedInput()
+    {
+        if (Input.Contains("."))
+        {
+            RemoveTrailingDecimal(Input);
+        }
+
+        if (IsADecimal(Input))
+        {
+            return string.Join("", Input);
+        }
+
+        throw new Exception($"Not a valid input: {string.Join(";", Input)}");
+    }
 
     private string GetDisplayedCalculation()
     {
@@ -69,8 +84,7 @@
     private bool IsADecimal(List<string> calculation)
     {
         return calculation
-        .Distinct()
-        .Except(new List<string> { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "-" })
-        .Count() == 0;
+            .Distinct()
+            .Except(new List<string> { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "-" }).Count() == 0;
     }
 }

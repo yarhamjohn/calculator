@@ -2,56 +2,34 @@
 
 <h1 class="mb-5">Calculator</h1>
 
-<Display Calculation=@GetCalculation() Result=@GetResult() />
+<Display Calculation=@GetCalculationToDisplay() Input=@currentInput />
 <Keypad Update=@Update />
 
 @code {
-    private List<string> currentInput = new List<string>();
     private List<string> currentCalculation = new List<string>();
-    private List<List<string>> allCalculations = new List<List<string>>();
+    private List<List<string>> allCompletedCalculations = new List<List<string>>();
+
+    private List<string> currentInput = new List<string>() { "0" };
+    private bool inputIsReplaceable = true;
     private List<string> operators = new List<string> { "+", "-", "x", "÷" };
-    private bool isPartialCalculation = false;
 
-    private void Update(Button button)
+    private List<string> GetCalculationToDisplay()
     {
-        var finishedPreviousCalculation = currentCalculation.Count > 0 && currentCalculation[currentCalculation.Count - 1] == "=";
-        if (finishedPreviousCalculation)
-        {
-            var previousCalculation = (string[])currentCalculation.ToArray().Clone();
-            allCalculations.Add(previousCalculation.ToList());
-
-            var startingNewCalculation = button.DisplayText != "=";
-            if (startingNewCalculation)
-            {
-                currentCalculation = new List<string>();
-                currentInput = new List<string>();
-            }
-        }
-
-        UpdateInput(button);
+        return currentCalculation.Count == 0 && allCompletedCalculations.Count > 0 ? allCompletedCalculations.Last() : currentCalculation;
     }
 
-    private List<string> GetCalculation()
+    //TODO precedence...
+    private List<string> GetResult()
     {
-        var nextCalculationNotStarted = allCalculations.Count > 0 && currentCalculation.Count == 0;
-        if (nextCalculationNotStarted) { return allCalculations.Last(); }
-        return currentCalculation;
-    }
-
-    private string GetResult()
-    {
-        System.Console.WriteLine("currentCalculation: " + string.Join("", currentCalculation));
-        System.Console.WriteLine("currentInput: " + string.Join("", currentInput));
-
-        var calculation = currentCalculation.Count == 0 || isPartialCalculation ? currentInput : currentCalculation;
+        var calculation = currentCalculation.Count == 0 ? currentInput : currentCalculation;
         if (calculation.Count == 0)
         {
-            return "0";
+            return new List<string> { "0" };
         }
 
         if (IsADecimal(calculation))
         {
-            return string.Join("", calculation).Trim();
+            return calculation;
         }
 
         List<string> chunks = GetCalculationChunks(calculation);
@@ -90,7 +68,8 @@
             }
         }
 
-        return runningTotal.ToString();
+        return runningTotal.ToString().Select(c => c.ToString()).ToList();
+
     }
 
     private List<string> GetCalculationChunks(List<string> calculation)
@@ -115,28 +94,36 @@
         return chunks;
     }
 
-    private void UpdateInput(Button button)
+    private void ResetCalculator()
+    {
+        currentCalculation.Clear();
+        allCompletedCalculations.Clear();
+        ResetInput();
+    }
+
+    private void ResetInput()
+    {
+        currentInput = new List<string>() { "0" };
+        inputIsReplaceable = true;
+    }
+
+    private void Update(Button button)
     {
         if (button.DisplayText == "C")
         {
-            currentInput.Clear();
-            currentCalculation.Clear();
-            allCalculations.Clear();
+            ResetCalculator();
             return;
         }
 
         if (button.DisplayText == "CE")
         {
-            currentInput.Clear();
+            ResetInput();
             return;
         }
 
         if (button.DisplayText == "<-")
         {
-            if (currentInput.Count == 0) { return; }
-            currentInput.RemoveAt(currentInput.Count - 1);
-
-            if (currentInput.Count == 1 && currentInput[0] == "-") { currentInput.Clear(); }
+            HandleBackspace();
             return;
         }
 
@@ -155,87 +142,97 @@
         if (button.DisplayText == "=")
         {
             HandleEquals();
-            PromoteToCalculation();
-            isPartialCalculation = false;
             return;
         }
 
         if (operators.Contains(button.DisplayText))
         {
             HandleOperator(button.DisplayText);
-            PromoteToCalculation();
-            isPartialCalculation = true;
             return;
         }
 
         HandleNumber(button.DisplayText);
     }
 
-    private void PromoteToCalculation()
+    private void HandleBackspace()
     {
-        currentCalculation = ((string[])currentInput.ToArray().Clone()).ToList();
+        currentInput.RemoveAt(currentInput.Count - 1);
+
+        var onlyNegativeSignRemains = currentInput.Count == 1 && currentInput[0] == "-";
+        if (onlyNegativeSignRemains || currentInput.Count == 0)
+        {
+            ResetInput();
+        }
+
+        return;
     }
 
     private void HandleNumber(string displayText)
     {
-        if (isPartialCalculation) { currentInput = new List<string> { displayText }; return; }
-        if (currentInput.Count == 0)
+        if (inputIsReplaceable)
         {
-            currentInput.Add(displayText);
-            return;
-        }
-
-        if (currentInput[currentInput.Count - 1] == "=")
-        {
-            return;
+            currentInput.Clear();
         }
 
         currentInput.Add(displayText);
+        inputIsReplaceable = false;
         return;
     }
 
     private void HandleOperator(string displayText)
     {
-        if (currentInput.Count == 0)
+        if (currentCalculation.Count == 0)
         {
-            currentInput.AddRange(new List<string> { "0", displayText });
-            return;
+            //TODO: this is a horrible way to add the inputToDisplay to the currentCalculation
+            currentCalculation = ((string[])currentInput.ToArray().Clone()).ToList().Concat(new List<string> { displayText }).ToList();
         }
-        else if (operators.Contains(currentInput[currentInput.Count - 1]))
+        else if (operators.Contains(currentCalculation[currentCalculation.Count - 1]))
         {
             ReplaceLastOperator(displayText);
-            return;
+        }
+        else
+        {
+            currentCalculation.Add(displayText);
         }
 
-        currentInput.Add(displayText);
+        currentInput = GetResult();
+        inputIsReplaceable = true;
         return;
     }
 
     private void HandleEquals()
     {
-        if (currentInput.Count == 0)
+        if (currentCalculation.Count == 0)
         {
-            currentInput.AddRange(new List<string> { "0", "=" });
+            currentCalculation = ((string[])currentInput.ToArray().Clone()).ToList().Concat(new List<string> { "=" }).ToList();
+        }
+        else if (currentCalculation[currentCalculation.Count - 1] == "=")
+        {
+            //TODO: Something mental here.
+            // 1 + 2 = = 
+            // 3 + 2 = | 5
             return;
         }
-        else if (currentInput[currentInput.Count - 1] == "=")
+        else
         {
-            currentInput = GetResult().Split().ToList();
-            currentInput.Add("=");
-            return;
+            currentCalculation.AddRange(((string[])currentInput.ToArray().Clone()).ToList().Concat(new List<string> { "=" }).ToList());
         }
 
-        if (isPartialCalculation)
-        {
-            currentInput = ((string[])currentCalculation.ToArray().Clone()).ToList().Concat(currentInput).ToList();
-        }
+        currentInput = GetResult();
+        allCompletedCalculations.Add(((string[])currentCalculation.ToArray().Clone()).ToList());
+        currentCalculation.Clear();
+        inputIsReplaceable = true;
 
-        currentInput.Add("=");
         return;
     }
 
     private void HandleDecimal()
     {
+        if (inputIsReplaceable)
+        {
+            currentInput.Clear();
+        }
+
         if (currentInput.Contains("."))
         {
             return;
@@ -243,7 +240,8 @@
 
         if (currentInput.Count() == 0)
         {
-            currentInput.AddRange(new[] { "0", "." });
+            currentInput = new List<string> { "0", "." };
+            inputIsReplaceable = false;
             return;
         }
 
@@ -253,7 +251,10 @@
 
     private void HandleSignChange()
     {
-        if (currentInput.Count == 0) { return; }
+        if (currentInput.Count == 1 && currentInput[0] == "0")
+        {
+            return;
+        }
 
         if (currentInput[0] == "-")
         {
@@ -267,8 +268,8 @@
 
     private void ReplaceLastOperator(string displayText)
     {
-        currentInput.RemoveAt(currentInput.Count - 1);
-        currentInput.Add(displayText);
+        currentCalculation.RemoveAt(currentCalculation.Count - 1);
+        currentCalculation.Add(displayText);
     }
 
     private bool IsADecimal(List<string> calculation)
