@@ -84,8 +84,13 @@
             }
         }
 
-        return runningTotal.ToString().Select(c => c.ToString()).ToList();
+        var result = runningTotal.ToString().Select(c => c.ToString()).ToList();
+        if (result[0] == "-") {
+            result.RemoveAt(0);
+            result.Insert(0, "+/-");
+        }
 
+        return result;
     }
 
     private List<string> GetCalculationChunks(List<string> calculation)
@@ -97,7 +102,7 @@
         {
             if (IsADecimal(new List<string> { calculation[i] }))
             {
-                activeChunk.Append(calculation[i]);
+                activeChunk.Append(calculation[i] == "+/-" ? "-" : calculation[i]);
             }
             else
             {
@@ -179,7 +184,7 @@
 
         currentInput.RemoveAt(currentInput.Count - 1);
 
-        var onlyNegativeSignRemains = currentInput.Count == 1 && currentInput[0] == "-";
+        var onlyNegativeSignRemains = currentInput.Count == 1 && currentInput[0] == "+/-";
         if (onlyNegativeSignRemains || currentInput.Count == 0)
         {
             ResetInput();
@@ -284,13 +289,13 @@
             return;
         }
 
-        if (currentInput[0] == "-")
+        if (currentInput[0] == "+/-")
         {
             currentInput.RemoveAt(0);
             return;
         }
 
-        currentInput.Insert(0, "-");
+        currentInput.Insert(0, "+/-");
         return;
     }
 
@@ -304,7 +309,7 @@
     {
         return calculation
         .Distinct()
-        .Except(new List<string> { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "-" })
+        .Except(new List<string> { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "+/-" })
         .Count() == 0;
     }
 }

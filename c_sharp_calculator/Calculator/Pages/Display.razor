@@ -18,6 +18,7 @@
 
     private string GetDisplayedInput()
     {
+        System.Console.WriteLine("GetDisplayedInput: " + string.Join(";", Input));
         if (Input.Contains("."))
         {
             RemoveTrailingDecimal(Input);
@@ -25,14 +26,17 @@
 
         if (IsADecimal(Input))
         {
-            return string.Join("", Input);
+            return string.Join("", ReplaceNegativeSign(Input));
         }
 
         throw new Exception($"Not a valid input: {string.Join(";", Input)}");
     }
 
+    private List<string> ReplaceNegativeSign(List<string> calculation) => calculation.Select(c => c == "+/-" ? "-" : c).ToList();
+
     private string GetDisplayedCalculation()
     {
+        System.Console.WriteLine("GetDisplayedCalculation: " + string.Join(";", Calculation));
         if (IsADecimal(Calculation))
         {
             return "";
@@ -43,7 +47,7 @@
             RemoveTrailingDecimal(Calculation);
         }
 
-        return AddSpacing(Calculation);
+        return AddSpacing(ReplaceNegativeSign(Calculation));
     }
 
     private void RemoveTrailingDecimal(List<string> calculation)
@@ -85,6 +89,6 @@
     {
         return calculation
             .Distinct()
-            .Except(new List<string> { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "-" }).Count() == 0;
+            .Except(new List<string> { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "+/-" }).Count() == 0;
     }
 }
