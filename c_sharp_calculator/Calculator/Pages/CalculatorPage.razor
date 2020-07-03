@@ -15,7 +15,23 @@
 
     private List<string> GetCalculationToDisplay()
     {
-        return currentCalculation.Count == 0 && allCompletedCalculations.Count > 0 ? allCompletedCalculations.Last() : currentCalculation;
+        if (currentCalculation.Count == 0 && allCompletedCalculations.Count > 0)
+        {
+            if (inputIsReplaceable || lastCalculationIsASimpleDecimal())
+            {
+                return allCompletedCalculations.Last();
+            }
+        }
+
+        return currentCalculation;
+    }
+
+    private bool lastCalculationIsASimpleDecimal()
+    {
+        var lastCalc = ((string[])allCompletedCalculations.Last().ToArray().Clone()).ToList();
+        var calc = lastCalc.Where(c => c != "=").ToList();
+
+        return IsADecimal(calc);
     }
 
     //TODO precedence...

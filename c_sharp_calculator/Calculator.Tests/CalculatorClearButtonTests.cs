@@ -67,6 +67,7 @@ namespace Calculator.Tests
         [InlineData(new[] { "1", "=", "<-" }, "0", "1 =")]
         [InlineData(new[] { "1", "=", "2", "<-" }, "0", "1 =")]
         [InlineData(new[] { "1", "=", "2", "=", "<-" }, "0", "2 =")]
+        [InlineData(new[] { "1", "+", "<-" }, "1", "1 +")]
         public void ClickingDeleteButton_CorrectlySetsCalculationAndResult(string[] setupButtons, string expectedResult, string expectedCalculation)
         {
             var cut = RenderComponent<CalculatorPage>();
