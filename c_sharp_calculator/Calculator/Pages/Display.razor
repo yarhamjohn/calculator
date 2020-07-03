@@ -45,7 +45,8 @@
             RemoveTrailingDecimal(Calculation);
         }
 
-        return AddSpacing(ReplaceNegativeSign(Calculation));
+        var spaced = AddSpacing(Calculation);
+        return string.Join("", ReplaceNegativeSign(spaced));
     }
 
     private void RemoveTrailingDecimal(List<string> calculation)
@@ -64,23 +65,22 @@
         return;
     }
 
-    private string AddSpacing(List<string> calculation)
+    private List<string> AddSpacing(List<string> calculation)
     {
-        var formatted = new StringBuilder();
-        for (var i = 0; i < calculation.Count; i++)
+        var spaced = new List<string>();
+        foreach (var elem in calculation)
         {
-            var isNegativeSign = i == 0 && calculation[i] == "-";
-            if (operators.Contains(calculation[i]) && !isNegativeSign)
+            if (operators.Contains(elem))
             {
-                formatted.Append($" {calculation[i]} ");
+                spaced.AddRange(new List<string> { " ", elem, " " });
             }
             else
             {
-                formatted.Append(calculation[i]);
+                spaced.Add(elem);
             }
         }
 
-        return formatted.ToString();
+        return spaced;
     }
 
     private bool IsADecimal(List<string> calculation)
