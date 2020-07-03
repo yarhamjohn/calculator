@@ -204,7 +204,14 @@
         }
         else if (operators.Contains(currentCalculation[currentCalculation.Count - 1]))
         {
-            ReplaceLastOperator(displayText);
+            if (inputIsReplaceable)
+            {
+                ReplaceLastOperator(displayText);
+            }
+            else
+            {
+                currentCalculation.AddRange(((string[])currentInput.ToArray().Clone()).ToList().Concat(new List<string> { displayText }).ToList());
+            }
         }
         else
         {
